@@ -1,0 +1,12 @@
+{% extends 'layout.html'%}
+{% block title %}homepage
+
+{% endblock %}
+{% block content %}
+ <h1>thc</h1>
+    <div id="chart">
+   <embed type="image/svg+xml" src= {{ line_chart|safe }} />
+</div>
+
+{% endblock %}
+
