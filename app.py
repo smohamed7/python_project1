@@ -48,13 +48,13 @@ def index():
 def line():
     conn=psycopg2.connect("dbname = sales_demo user=postgres host =localhost password=123")
     cur=conn.cursor()
-    cur.execute("""SELECT (EXTRACT (MONTH FROM sales.created_at)as months,
-      SUM(sales.quantity)as total sales
-      FROM public.sales
+    cur.execute("""SELECT EXTRACT (MONTH FROM sales.created_at) AS months,
+      SUM(sales.quantity)as "total sales" FROM public.sales
       GROUP BY months
       ORDER BY months
       """)
     records = cur.fetchall()
+    print(records)
 
     line_chart=pygal.Line()
     line_chart.title="sales for 2019"
@@ -63,12 +63,25 @@ def line():
     for i in records:
         x.append(i[0])
         y.append(i[1])
+        # print(x)
+        # print(y)
 
     line_chart.x_labels=map(str,x)
     line_chart.add("sales",y)
-
     line_chart=line_chart.render_data_uri()
-    return render_template('index.html',line_chart=line_chart)
+
+    # Pie chart
+    data = [('internet explorer', 19.5), ('chrome', 36.3), ('Opera', 2.3), ('Safari', 4.5)]
+
+    pie_chart = pygal.Pie()
+    pie_chart.title = 'Browser usage in February 2012 (in %)'
+    pie_chart.add(data[0][0], data[0][1])
+    pie_chart.add(data[1][0], data[1][1])
+    pie_chart.add(data[2][0], data[2][1])
+    pie_chart.add(data[3][0], data[3][1])
+    pie_Chart = pie_chart.render_data_uri()
+
+    return render_template('index.html', line_chart=line_chart, pie_Chart=pie_Chart)
 
 
 
